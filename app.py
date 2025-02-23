@@ -5,7 +5,7 @@ import os
 import json
 from sendToAgent import callAgentAPI
 from divideWork import run_developer, run_designer, get_App_js
-from app_build_script import run_command, log_progress
+from app_build_script import run_command
 from errorhandling import debug_build_error
 from catch_error import run_command_with_logging
 from deploy_script import deploy_
@@ -26,18 +26,18 @@ def build_project(prompt, project_name):
         send_update(f"Starting project: {project_name}")
 
         # Setup project path
-        PATH = os.path.join(os.getcwd(), project_name)
+        PATH = os.path.join(os.getcwd(), "user_generated", project_name)
         os.makedirs(PATH, exist_ok=True)
 
         # Create React app
         send_update("Initializing React project...")
-        run_command(f"npx create-react-app {project_name} --template typescript", log=False)
+        run_command(f"npx create-react-app {project_name} --template typescript", cwd=os.path.join(os.getcwd(), "user_generated"))
 
         # Start orchestration agent
         send_update("Calling Orchestrate Agent...")
         project_manager_agent = "orchestrate-tech"
         agent1_op = callAgentAPI(project_manager_agent, prompt)['response']
-        json.dump(agent1_op, open('agent_op/agent_output.json', 'w'))
+        json.dump(agent1_op, open(f'{PATH}/agent_output.json', 'w'))
 
         # Call design and development agents
         send_update("Running Design Agent...")
@@ -47,14 +47,14 @@ def build_project(prompt, project_name):
         send_update("Running Developer Agent...")
         dev_files = run_developer(agent1_op, PATH)
 
-        send_update("Getting App.js...")
+        send_update("Getting App.tsx...")
         app_file = get_App_js(agent1_op, PATH)
 
         # Build loop with retries
         flag = False
         count = 0
 
-        while not flag and count < 10:
+        while not flag and count < 5:
             try:
                 send_update(f"Build Attempt {count + 1}...")
                 run_command_with_logging("npm run build", cwd=PATH)
@@ -72,8 +72,13 @@ def build_project(prompt, project_name):
                 count += 1
                 send_update("Build Failed. Analyzing the error...")
 
-                with open(f"{PATH}/error_log.txt", "r") as f:
-                    error_log = f.read()
+                try:
+                    with open(f"{PATH}/error_log.txt", "r") as f:
+                        error_log = f.read()
+                except FileNotFoundError:
+                    print(f"{PATH}/error_log.txt")
+                    send_update("No error log found.")
+                    error_log = "Please check the files for any possible errors."
 
                 file_contents = {}
                 all_files = list(set(des_files + dev_files + app_file))
@@ -81,15 +86,31 @@ def build_project(prompt, project_name):
                     with open(PATH + file, "r") as f:
                         file_contents[file] = f.read()
 
-                updated_files = debug_build_error(error_log, file_contents)
+                updated_files = debug_build_error(error_log, file_contents, PATH)
 
                 for file_path, content in updated_files.items():
                     send_update(f"Updating: {file_path}")
                     with open(PATH + file_path, "w") as f:
                         f.write(content)
+                
+                if not updated_files:
+                    send_update("No fixes found. Exiting process.")
+                    flag = True
+                    send_update("Deploying the app...")
+                    deploy_(PATH, USERNAME, project_name)
+                    send_update("Deployment Complete!")
+                    send_update(f"Github repo link: https://github.com/{USERNAME}/{project_name}.git")
+                    send_update(f'Project deployed at: https://{USERNAME}.github.io/{project_name}')
+                    send_update("Process completed successfully.")
 
-        if count >= 10:
-            send_update("Build Failed after 10 attempts. Check logs.")
+        if count >= 5:
+            send_update("Build Failed after 5 attempts. Check logs.")
+            send_update("Deploying the app...")
+            deploy_(PATH, USERNAME, project_name)
+            send_update("Deployment Complete!")
+            send_update(f"Github repo link: https://github.com/{USERNAME}/{project_name}.git")
+            send_update(f'Project deployed at: https://{USERNAME}.github.io/{project_name}')
+            send_update("Process completed successfully.")
 
     except Exception as e:
         send_update(f"Error: {str(e)}")
@@ -135,4 +156,4 @@ def stream():
     return Response(event_stream(), mimetype="text/event-stream")
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True)
+    app.run(debug=False, threaded=True)

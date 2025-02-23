@@ -1,4 +1,4 @@
-from app_build_script import run_command, log_progress
+from app_build_script import run_command # log_progress
 import os
 import requests
 import json
@@ -181,19 +181,19 @@ def deploy(path, username, repo_name):
 
     add_homepage_to_package_json(os.path.join(path, 'package.json'), f"https://{username}.github.io/{repo_name}")
     print("Homepage added to package.json")
-    log_progress("Homepage added to package.json", path)
+    # log_progress("Homepage added to package.json", path)
 
     setup_repo(username, repo_name, path)
     print("Repository setup complete")
-    log_progress("Repository setup complete", path)
+    # log_progress("Repository setup complete", path)
 
     enable_workflow_permissions(username, repo_name)
     print("Workflow permissions enabled")
-    log_progress("Workflow permissions enabled", path)
+    # log_progress("Workflow permissions enabled", path)
 
     git_init(username, repo_name, path)
     print("Git initialized")
-    log_progress("Git initialized", path)
+    # log_progress("Git initialized", path)
 
     pages_url = f"{GITHUB_API_URL}/repos/{username}/{repo_name}/pages"
     pages_payload = {"build_type":"workflow","source": {"branch": "gh-pages", "path": "/"}}
@@ -201,13 +201,13 @@ def deploy(path, username, repo_name):
 
     if response.status_code in [200, 201, 202]:
         print("GitHub Pages enabled from 'gh-pages' branch")
-        log_progress("GitHub Pages enabled from 'gh-pages' branch", path)
+        # log_progress("GitHub Pages enabled from 'gh-pages' branch", path)
     else:
         print(f"Failed to enable GitHub Pages: {response}")
-        log_progress(f"Failed to enable GitHub Pages: {response}", path)
+        # log_progress(f"Failed to enable GitHub Pages: {response}", path)
 
     print(f"Repository '{repo_name}' created and deployed at: https://{username}.github.io/{repo_name}")
-    log_progress(f"Repository '{repo_name}' created and deployed at: https://{username}.github.io/{repo_name}", path)
+    # log_progress(f"Repository '{repo_name}' created and deployed at: https://{username}.github.io/{repo_name}", path)
 
     return 'https://{username}.github.io/{repo_name}'
 
@@ -228,19 +228,19 @@ def deploy_(path, username, repo_name):
 
     add_homepage_to_package_json(os.path.join(path, 'package.json'), f"https://{username}.github.io/{repo_name}")
     print("Homepage added to package.json")
-    log_progress("Homepage added to package.json", path)
+    # log_progress("Homepage added to package.json", path)
 
     setup_repo(username, repo_name, path)
     print("Repository setup complete")
-    log_progress("Repository setup complete", path)
+    # log_progress("Repository setup complete", path)
 
     enable_workflow_permissions(username, repo_name)
     print("Workflow permissions enabled")
-    log_progress("Workflow permissions enabled", path)
+    # log_progress("Workflow permissions enabled", path)
 
     git_init(username, repo_name, path)
     print("Git initialized")
-    log_progress("Git initialized", path)
+    # log_progress("Git initialized", path)
 
     # Wait a bit before configuring Pages
     import time
@@ -267,14 +267,14 @@ def deploy_(path, username, repo_name):
 
     if response.status_code in [200, 201, 202]:
         print("GitHub Pages configured to deploy from gh-pages branch")
-        log_progress("GitHub Pages configured to deploy from gh-pages branch", path)
+        # log_progress("GitHub Pages configured to deploy from gh-pages branch", path)
     else:
         print(f"Failed to configure GitHub Pages: {response.text}")
-        log_progress(f"Failed to configure GitHub Pages: {response.text}", path)
+        # log_progress(f"Failed to configure GitHub Pages: {response.text}", path)
 
     deployment_url = f"https://{username}.github.io/{repo_name}"
     print(f"Repository '{repo_name}' created and deployed at: {deployment_url}")
-    log_progress(f"Repository '{repo_name}' created and deployed at: {deployment_url}", path)
+    # log_progress(f"Repository '{repo_name}' created and deployed at: {deployment_url}", path)
 
     return deployment_url
 

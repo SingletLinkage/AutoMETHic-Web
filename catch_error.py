@@ -74,10 +74,6 @@ def run_command_with_logging(command: str, cwd: str = None) -> None:
 
 # Usage
 if __name__ == "__main__":
-    NAME = 'calculator'
-    PATH = f'/home/arka/Desktop/Hackathons/KrackHack25/{NAME}'
-    
-    try:
-        run_command_with_logging("npm run build", cwd=PATH)
-    except Exception as e:
-        print("Server failed to start. Check error_log.txt for details.")
+    NAME = 'abnhihorha_f828ad'
+    PATH = f'/home/arka/Desktop/Hackathons/KrackHack25/myCodes/user_generated/{NAME}/'
+    run_command_with_logging("npm run build", cwd=PATH)

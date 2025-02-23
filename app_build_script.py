@@ -8,8 +8,6 @@ def run_command(command: str, cwd: str = None, log=True) -> None:
 
         try:
             print(f"Running command: {command}")
-            if log:
-                log_progress(f"Running command: {command}", cwd)
                 
             process = subprocess.Popen(
                 command,
@@ -39,8 +37,7 @@ def run_command(command: str, cwd: str = None, log=True) -> None:
         except subprocess.CalledProcessError as e:
             print(f"Command failed with return code {e.returncode}")
             print(f"Command: {command}")
-            if log:
-                log_progress(f"Command {command} failed with return code {e.returncode}", cwd)
+
             raise
 
 

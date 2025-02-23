@@ -1,5 +1,4 @@
 from sendToAgent import callAgentAPI
-from app_build_script import log_progress
 
 def saveToFile(file_path, content):
     import os
@@ -28,7 +27,7 @@ def run_designer(response, _path):
     for idx, task in enumerate(designer_tasks):
         # designer_tasks[idx]['frontend_general_structure'] = frontend_structure
         print(f"Calling designer-agent on: {task['component_path']}")
-        log_progress(f"Calling designer-agent on: {task['component_path']}", _path)
+        # log_progress(f"Calling designer-agent on: {task['component_path']}", _path)
 
         code = callAgentAPI('design-tech', task)['response']
         path = task['component_path']
@@ -45,7 +44,7 @@ def run_developer(response, _path):
 
     for idx, task in enumerate(developer_tasks):
         # developer_tasks[idx]['backend_general_structure'] = backend_structure
-        if task['file_path'] == "App.tsx":
+        if  "App.tsx" in task['file_path']:
             continue
 
 
@@ -59,7 +58,7 @@ def run_developer(response, _path):
                 task['existing_code'] = file.read()
 
         print(f"Calling developer-agent on: {task['file_path']}")   
-        log_progress(f"Calling developer-agent on: {task['file_path']}", _path) 
+        # log_progress(f"Calling developer-agent on: {task['file_path']}", _path) 
         code = callAgentAPI('develop-tech', task)['response']
 
         saveToFile(_path+path, code)
@@ -69,7 +68,7 @@ def run_developer(response, _path):
 def get_App_js(response, _path):
     code = callAgentAPI('app-tsx', response)['response']
     path = '/src/App.tsx'
-    log_progress(f"Calling app-tsx agent on: {path}", _path)
+    # log_progress(f"Calling app-tsx agent on: {path}", _path)
     saveToFile(_path+path, code)
 
     return [path]
