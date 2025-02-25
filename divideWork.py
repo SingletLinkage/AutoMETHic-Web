@@ -44,7 +44,7 @@ def run_developer(response, _path):
 
     for idx, task in enumerate(developer_tasks):
         # developer_tasks[idx]['backend_general_structure'] = backend_structure
-        if  "App.tsx" in task['file_path']:
+        if "App.tsx" in task['file_path']:
             continue
 
 
@@ -53,8 +53,8 @@ def run_developer(response, _path):
 
         # check if path (file) already exists
         import os.path
-        if os.path.exists(path):
-            with open(path) as file:
+        if os.path.exists(_path+path):
+            with open(_path+path) as file:
                 task['existing_code'] = file.read()
 
         print(f"Calling developer-agent on: {task['file_path']}")   

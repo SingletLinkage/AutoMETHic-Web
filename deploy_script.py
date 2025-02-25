@@ -220,7 +220,7 @@ def deploy_(path, username, repo_name):
         os.makedirs(directory, exist_ok=True)
     
     with open(yml_path, 'w', encoding='utf-8') as f:
-        content = open('myCodes/deploy.yml', 'r')
+        content = open('deploy.yml', 'r')
         f.write(content.read())
         content.close()
 

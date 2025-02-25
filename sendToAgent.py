@@ -6,7 +6,7 @@ def callAgentAPI(agent_url, agent_data):
     
     url = "https://api-lr.agent.ai/v1/action/invoke_agent"
     headers = {
-        "Authorization": "Bearer tFCAElxh6tfa3VOZC0M4SoRUhakzZo31PXkOkodNIhLnaYgreWljhllTgIDWjreq",
+        "Authorization": "Bearer Gg2LxYJ2zEM9XpL0N9IwFootgSGbR6T1Iu2zVwnXBvYwwgH2JQilOdPiTTZXi9Rh",
         "Content-Type": "application/json"
     }
     data = {

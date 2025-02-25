@@ -54,7 +54,7 @@ def build_project(prompt, project_name):
         flag = False
         count = 0
 
-        while not flag and count < 5:
+        while not flag and count < 10:
             try:
                 send_update(f"Build Attempt {count + 1}...")
                 run_command_with_logging("npm run build", cwd=PATH)
@@ -78,7 +78,16 @@ def build_project(prompt, project_name):
                 except FileNotFoundError:
                     print(f"{PATH}/error_log.txt")
                     send_update("No error log found.")
-                    error_log = "Please check the files for any possible errors."
+
+                    send_update("Deploying the app...")
+                    deploy_(PATH, USERNAME, project_name)
+                    send_update("Deployment Complete!")
+                    send_update(f"Github repo link: https://github.com/{USERNAME}/{project_name}.git")
+                    send_update(f'Project deployed at: https://{USERNAME}.github.io/{project_name}')
+                    send_update("Process completed successfully.")
+
+                    break
+                    
 
                 file_contents = {}
                 all_files = list(set(des_files + dev_files + app_file))
@@ -92,18 +101,8 @@ def build_project(prompt, project_name):
                     send_update(f"Updating: {file_path}")
                     with open(PATH + file_path, "w") as f:
                         f.write(content)
-                
-                if not updated_files:
-                    send_update("No fixes found. Exiting process.")
-                    flag = True
-                    send_update("Deploying the app...")
-                    deploy_(PATH, USERNAME, project_name)
-                    send_update("Deployment Complete!")
-                    send_update(f"Github repo link: https://github.com/{USERNAME}/{project_name}.git")
-                    send_update(f'Project deployed at: https://{USERNAME}.github.io/{project_name}')
-                    send_update("Process completed successfully.")
 
-        if count >= 5:
+        if count >= 10:
             send_update("Build Failed after 5 attempts. Check logs.")
             send_update("Deploying the app...")
             deploy_(PATH, USERNAME, project_name)
