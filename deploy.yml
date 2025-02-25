@@ -3,7 +3,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main # Trigger when changes are pushed to main
+      - main
 
 jobs:
   build-and-deploy:
@@ -16,20 +16,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build React App
-        run: npm run build
+      - name: Build React App (Ignore ESLint Warnings)
+        run: ESLINT_NO_DEV_ERRORS=true CI=false npm run build
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: build
-          clean: true # Ensures old files are removed without deleting the branch
-
-      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build # or whatever your build directory is
-          force_orphan: true # This will make gh-pages a clean branch with only latest deployment
-
+          publish_dir: ./build
+          force_orphan: true

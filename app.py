@@ -16,6 +16,28 @@ app = Flask(__name__)
 STATUS_UPDATES = []
 USERNAME = "SingletLinkage"
 
+def update_build_script(PACKAGE_JSON_PATH):
+    try:
+        # Read package.json
+        with open(PACKAGE_JSON_PATH, "r", encoding="utf-8") as file:
+            package_data = json.load(file)
+
+        # Ensure "scripts" exists
+        if "scripts" not in package_data:
+            package_data["scripts"] = {}
+
+        # Update or add the build script
+        package_data["scripts"]["build"] = "ESLINT_NO_DEV_ERRORS=true CI=false react-scripts build"
+
+        # Write the updated package.json back
+        with open(PACKAGE_JSON_PATH, "w", encoding="utf-8") as file:
+            json.dump(package_data, file, indent=2)
+
+        print("✅ Successfully updated package.json with the modified build script.")
+
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        print(f"❌ Error: {e}")
+
 def send_update(message):
     """ Append new update message to STATUS_UPDATES. """
     STATUS_UPDATES.append(f"data: {message}\n\n")
@@ -29,9 +51,13 @@ def build_project(prompt, project_name):
         PATH = os.path.join(os.getcwd(), "user_generated", project_name)
         os.makedirs(PATH, exist_ok=True)
 
+
         # Create React app
         send_update("Initializing React project...")
         run_command(f"npx create-react-app {project_name} --template typescript", cwd=os.path.join(os.getcwd(), "user_generated"))
+        
+        # Update build script
+        update_build_script(PATH + "/package.json")
 
         # Start orchestration agent
         send_update("Calling Orchestrate Agent...")
