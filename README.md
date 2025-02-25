@@ -46,6 +46,10 @@ Before running the project, ensure you have the following installed:
    ```sh
    winget install --id GitHub.cli
    ```
+   ```
+   sudo apt install gh
+   ```
+
 2. **Authenticate GitHub CLI**:
    ```sh
    gh auth login
@@ -70,6 +74,7 @@ Before running the project, ensure you have the following installed:
    ```sh
    TOKEN="YOUR-TOKEN"
    ```
+3. Create a new API key from Agent.ai and enter the key in `sendToAgent.py` file.
 
 ## How to Run the Code
 To run the project locally, follow these steps:
@@ -77,7 +82,7 @@ To run the project locally, follow these steps:
 1. **Clone the Repository:**
    ```sh
    git clone <repository-url>
-   cd KRACKHACK25
+   cd AutoMETHic-Web
    ```
 
 2. **Set Up Virtual Environment (Optional but Recommended):**

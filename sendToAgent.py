@@ -3,10 +3,12 @@ import json
 
 def callAgentAPI(agent_url, agent_data):
     print("Calling agent: ", agent_url)
+
+    KEY = "enter-your-key-here"
     
     url = "https://api-lr.agent.ai/v1/action/invoke_agent"
     headers = {
-        "Authorization": "Bearer Gg2LxYJ2zEM9XpL0N9IwFootgSGbR6T1Iu2zVwnXBvYwwgH2JQilOdPiTTZXi9Rh",
+        "Authorization": f"Bearer {KEY}",
         "Content-Type": "application/json"
     }
     data = {
